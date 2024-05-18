@@ -9,6 +9,8 @@ print(f"Memory USAGE : {MemoryInfo()} % ")
 print(f"Disk space   : {DiskInfo()} % ")
 
 
+print("test")
+
 
 
 
