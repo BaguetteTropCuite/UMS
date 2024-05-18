@@ -3,7 +3,7 @@ import psutil
 
 #Retourne chaque seconde le pourcentage d'utilisation du CPU
 def CpuInfo():
-    return psutil.cpu_percent(interval=1)
+    return psutil.cpu_percent(interval=0.5)
 
 
 
