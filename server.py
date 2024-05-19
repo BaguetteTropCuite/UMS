@@ -12,6 +12,7 @@ La fonction ci-dessus va envoyer les données collecter sur le monitoring au ser
 """
 
 import socket
+import json
 
 HOST = "10.0.100.100"       #IP_DE_VOTRE_SERVEUR
 PORT = 55000                #PORT defaut 55000
@@ -40,7 +41,8 @@ def envoyer_data(cpu_usage,ram_usage,disque_usage):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as serveur:
 
             serveur.connect((HOST,PORT))                                                            # Connection au serveur
-            serveur.sendall(message.encode('utf-8'))                                                # Les données sont envoyé au serveur
+            message_json = json.dumps(message)                                                      # Converti le dictionnaire message au format json dans la variable "message_json"
+            serveur.sendall(message_json.encode('utf-8'))                                                # Les données sont envoyé au serveur
 
     except Exception as erreur:
 
@@ -51,6 +53,8 @@ def envoyer_data(cpu_usage,ram_usage,disque_usage):
         La definition de la variable HOST et PORT dans le fichier server.py
         La configuration du serveur (fichier server.py)
         
+        {erreur}
+
         """)
 
 
