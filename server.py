@@ -1,20 +1,12 @@
-#import socket
+import socket
+
+HOST = "10.0.100.100"
+PORT = 55000
 
 
-"""
-Création d'une connection TCP/IP vers le serveur de monitoring
+serveur = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-"""
+serveur.connect((HOST,PORT))
 
-"""
-HOST = "10.0.100.100"    # <=== Adresse IP du serveur
-PORT = 65432             # <=== Port utilisé par le serveur (peut être changé des deux cotés)
-
-
-#Connection au serveur : 
-with socket.socket(socket.AF_INET, socket.SOCK) as s:  # <=== AF_INET pour IPV4 sockstreal pour tcp
-    s.connet((HOST, PORT))
-    s.sendall(b"test")
-    data = s.recv(1024)
-
-print(f"Recu : {data!r}")"""
+msg = serveur.recv(1024)
+print(msg.decode("utf-8"))
