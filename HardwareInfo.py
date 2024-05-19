@@ -1,6 +1,6 @@
 
 """
-    Déclaration des variables global
+    Déclaration des variables global c'est variables seront incrémenté par la fonction avg_info
 """
 _avg_ram = []       # <=== Valeur moyenne de l'usage RAM en % (Valeur ajouter toutes les secondes pendant 1 MN)
 _avg_cpu = []       # <=== Valeur moyenne de l'usage cpu en % (Valeur ajouter toutes les secondes pendant 1 MN)
@@ -14,19 +14,21 @@ _disk = None        # <=== Valeur pourcentage d'usage du disque dur
 """
 
 
-from psutil import cpu_percent, disk_usage, virtual_memory
+from psutil import cpu_percent, disk_usage, virtual_memory        #Utilisation pour afficher les utilisations systèmes
+from statistics import mean                                       #Pour calculer les AVG sur les lists func acg_affichage
 
 
 
-def info_cpu():                                     # <=== Retourne à l'instant T le pourcentage d'utilisation du CPU
-    return psutil.cpu_percent(interval=0.5)
+def info_cpu():
+    return cpu_percent(interval=0.5)                                     # <=== Retourne à l'instant T le pourcentage d'utilisation du CPU
+    #return psutil.cpu_percent(interval=0.5)
 
 
 
 
 def info_memoire():                                 # <=== Retourne à l'instant T le pourcentage d'utilisation de la mémoire vive
 
-    memory = psutil.virtual_memory()
+    memory = virtual_memory()
 
     memory_pourcent = memory.percent
 
@@ -35,7 +37,7 @@ def info_memoire():                                 # <=== Retourne à l'instant
 
 
 def info_disque():                                  # <=== Retourne à l'instant T le pourcentage d'utilisation du disk HDD
-    disk = psutil.disk_usage('/')
+    disk = disk_usage('/')
 
     disk_pourcentage = disk.percent
 
@@ -55,8 +57,9 @@ def avg_info(cpu,ram,disk):                         # <=== # Cette fonction reto
     _disk = disk
 
 
-def affichage_avg():                                # <=== Retourne dans trois variables les valeurs AVG
-    return _avg_cpu, _avg_ram, _disk
+def affichage_avg():                              # <=== Retourne dans trois variables les valeurs AVG
 
+    avg_cpu = mean(_avg_cpu)      #Calcule l'utilisation moyenne puis la stock dans la variable avg_xxx avant d'être retourné
+    avg_ram = mean(_avg_ram)
 
-
+    return avg_cpu, avg_ram, _disk
