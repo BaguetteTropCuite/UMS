@@ -1,4 +1,4 @@
-from HardwareInfo import info_cpu, info_disque, info_memoire, avg_info, affichage_avg
+from functions import Hote, Monitoring     #Librairie de monitoring
 import time
 import os
 
@@ -7,37 +7,54 @@ x = 0
 
 while True:
 
-    avg_info(info_cpu(),info_memoire(),info_disque())
-
-
-    print(f"CPU usage    : {info_cpu()} %")
-    print(f"RAM usage    : {info_memoire()} %")
-    print(f"DISQUE usage : {info_disque()} %")
-    print(x)
-
-    time.sleep(0.1)
-
-    os.system('clear')
-
     x += 1
 
-    if (x == 60):
-        #Fonction envoie code au serveur
+    m = Monitoring()
 
-        cpu, ram, disk = affichage_avg()           # La fonction retourne 3 valeurs, qui doivent être stocké dans une variable avant d'être lu
+    if True:      # <== Changer True par False pour ne pas avoir d'affichage CLI dans le terminal du client (utile pour le debug)
 
         print(f"""
-        CPU    : {info_cpu()} %
-        Ram    : {info_memoire()} % 
-        Disque : {info_disque()} %
 
-        AVG CPU : {cpu} %
-        AVG RAM : {ram} %
+        CPU USAGE   : {m.utilisation_cpu()} %
+        RAM Usage   : {m.utilisation_memoire()} %
+        Disque Uage : {m.utilisation_disque()} %
+        
         """)
+        #time.sleep(2)
+        #os.system('clear')
 
-        break
-    
-        #x = 0       # <=== Reset X
+    if True:     # <== Monitoring
+
+        
+
+        m.utilisation_avg()    #Incremente les valeurs avg à chaque itération
+        print(x)
+        #time.sleep(2)
+        os.system('clear')
+
+        if (x == 60):
+            
+            cpu, ram, disque = m.retour_avg()
+
+            #fonction envoie des données vers le serveur à l'aide des trois variables
+
+            print(f"""
+
+                CPU USAGE  AVG   : {cpu} %
+                RAM Usage  AVG   : {ram} %
+                Disque Uage AVG  : {disque} %
+        
+            """)
+            
+            break
+
+
+
+
+
+
+        
+
 
 
 
