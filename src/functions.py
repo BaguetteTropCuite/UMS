@@ -39,7 +39,7 @@ class Monitoring(Hote):                              # <=== Classe pour le systÃ
 
 
     def utilisation_cpu(self):                       # <=== Retourne Ã  l'instant T le pourcentage d'utilisation du CPU
-        return cpu_percent(interval=0.5)
+        return cpu_percent(interval=0.2)
 
 
 

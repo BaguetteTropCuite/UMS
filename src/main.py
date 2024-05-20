@@ -1,6 +1,7 @@
 from functions import Hote, Monitoring     #Librairie de monitoring
 import time
 import os
+import server
 
 
 x = 0
@@ -37,6 +38,7 @@ while True:
             cpu, ram, disque = m.retour_avg()
 
             #fonction envoie des données vers le serveur à l'aide des trois variables
+            server.envoyer_data(cpu,ram,disque)
 
             print(f"""
 
