@@ -58,4 +58,4 @@ def envoyer_data(cpu_usage,ram_usage,disque_usage):
         """)
 
 
-envoyer_data(12,44,80)
+#envoyer_data(12,44,80)          UTILISE POUR TEST
