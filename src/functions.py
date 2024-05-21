@@ -1,6 +1,6 @@
-from psutil import cpu_percent, disk_usage, virtual_memory
+from psutil import cpu_percent, disk_usage, virtual_memory, net_io_counters
 from statistics import mean
-import os, socket, platform
+import os, socket, platform, time
 
 
 
@@ -29,8 +29,10 @@ class Hote:                                          # <=== Classe parent du sys
 
 class Monitoring(Hote):                              # <=== Classe pour le système de monitoring, objectif : (RAM, CPU, Réseau, Disque)
 
-    def __init__(self):
+    def __init__(self,network_interface_name):
         super().__init__()
+        #nom de la carte réseau
+        self.network_interface_name = network_interface_name
         #RAM en mb
         self._ram_used = []
         self._ram_total = []
@@ -40,13 +42,13 @@ class Monitoring(Hote):                              # <=== Classe pour le syst�
         self._disque_used = []
         self._disque_total = []
         #Reseau
-        self._avg_reseau = []
+        self._reseau_upload = []
+        self._reseau_download = []
         
 
 
     def utilisation_cpu(self):                       # <=== Retourne à l'instant T le pourcentage d'utilisation du CPU (all core)
-        return cpu_percent(interval=None)
-        time.sleep(0.5)                              # <=== Periode de mesure du cpu 
+        return cpu_percent(interval=0.5) 
 
 
 
@@ -78,8 +80,27 @@ class Monitoring(Hote):                              # <=== Classe pour le syst�
 
         return disque_used, disque_total
 
+    def utilisation_reseau(self,):
+        interface_stat_debut = net_io_counters(pernic=True, nowrap=True)[self.network_interface_name]
+        time_debut = time.time()
 
-    def utilisation_avg(self):
+        time.sleep(1)
+
+        interface_stat_fin = net_io_counters(pernic=True, nowrap=True)[self.network_interface_name]
+        time_fin = time.time()
+
+        upload = interface_stat_fin.bytes_sent - interface_stat_debut.bytes_sent
+        download = interface_stat_fin.bytes_recv - interface_stat_debut.bytes_recv
+
+
+
+        return upload, download   # renvoie le nombre de byte envoyé en une seconde, ainsi que le nombre de byte recu dans cette seconde
+
+
+
+
+
+    def utilisation_avg(self):     #???
 
         m = Monitoring()
 
@@ -88,7 +109,7 @@ class Monitoring(Hote):                              # <=== Classe pour le syst�
         self._disque = m.utilisation_disque()             # <=== Pas du tout opti à changer 
 
     
-    def retour_avg(self):
+    def retour_avg(self):         # ???
         avg_cpu = mean(self._avg_cpu)
         avg_ram = mean(self._avg_ram)
 
@@ -107,16 +128,21 @@ TEST UNIT
 ==========
 """
 
-client = Monitoring()
+client = Monitoring(network_interface_name="enp1s0f0u4")
 
 #print(client.host_version())
 #print(client.utilisation_cpu())
 #print(client.utilisation_memoire())
 #print(client.utilisation_disque())
-
+c_value = client.utilisation_cpu()
 m_value_u, m_value_m = client.utilisation_memoire()
 d_value_u, d_value_m = client.utilisation_disque()
+up, down = client.utilisation_reseau()
+
+print(f"""cpu usage : {c_value} %""")
 
 print(f"""value = {m_value_u}/{m_value_m}""")
 
-print(f"""value = {d_value_u}/{d_value_m}""")          
+print(f"""value = {d_value_u}/{d_value_m}""")       
+
+print(f""" UP : {up} down : {down}""")
