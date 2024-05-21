@@ -16,6 +16,9 @@ Client :
 Serveur :
   Le serveur récupère les informations envoyées par les clients, puis stock ces informations pendant 7 jours, à l'aide d'une interface WEB minimaliste, le serveur Web affiche les comptesrendus des serveur sur 7 jours, 24H ainsi que 2 heures.
 
+  
+![Image_Project](https://github.com/BaguetteTropCuite/UMS/assets/70807468/31ccc04a-3943-4fbb-bd51-04d7372b2865)
+
 
 
   Détail Technique : 
