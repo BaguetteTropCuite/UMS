@@ -31,34 +31,52 @@ class Monitoring(Hote):                              # <=== Classe pour le syst�
 
     def __init__(self):
         super().__init__()
-        self._avg_ram = []                           #<=\
-        self._avg_cpu = []                           #<=== Variable qui stock les données toutes les 2 secondes pour le calcul de l'AVG
-        self._disque = []                            #<=/
+        #RAM en mb
+        self._ram_used = []
+        self._ram_total = []
+        #CPU en %                                  
+        self._avg_cpu = [] 
+        #Disque en mb                          
+        self._disque_used = []
+        self._disque_total = []
+        #Reseau
         self._avg_reseau = []
         
 
 
-    def utilisation_cpu(self):                       # <=== Retourne à l'instant T le pourcentage d'utilisation du CPU
-        return cpu_percent(interval=0.2)
+    def utilisation_cpu(self):                       # <=== Retourne à l'instant T le pourcentage d'utilisation du CPU (all core)
+        return cpu_percent(interval=None)
+        time.sleep(0.5)                              # <=== Periode de mesure du cpu 
 
 
 
-    def utilisation_memoire(self):                   # <=== Retourne à l'instant T le pourcentage d'utilisation de la mémoire vive
+    def utilisation_memoire(self):                   # <=== memoire_pourcent = float, memoire_used & memoire_total = int
+        """
+            Retourne 3 valeurs : 
+                en mb memoire_used = mémoire actuellement utilisé par le système
+                en mb memoire_total = mémoire disponible sur l'hote
+                memoire_pourcent = Utilisation de la mémoire en pourcentage
+
+        """
         
         memoire = virtual_memory()
 
-        memoire_pourcent = memoire.percent
+        memoire_used = memoire.used // (1024 ** 2)      # // (1024 * 1024) pour mb | // (1024 * 1024 * 1024) pour gb
+        memoire_total = memoire.total // (1024 ** 2)
+        #memoire_pourcent = memoire.percent             #Utiliser pour le debug, calcul coté serveur avec les valeurs max et used
 
-        return memoire_pourcent
+        return memoire_used, memoire_total
 
     
     def utilisation_disque(self):                    # <=== Retourne à l'instant T le pourcentage d'utilisation du disk HDD
 
         disque = disk_usage('/')
 
-        disque_pourcent = disque.percent
+        disque_used = disque.used >> 20 #mb
+        disque_total = disque.total >> 20 #mb
+        #disque_percent = disque.percent             # debug
 
-        return disque_pourcent
+        return disque_used, disque_total
 
 
     def utilisation_avg(self):
@@ -87,12 +105,18 @@ class Monitoring(Hote):                              # <=== Classe pour le syst�
 ==========
 TEST UNIT
 ==========
+"""
 
 client = Monitoring()
 
-print(client.host_version())
+#print(client.host_version())
+#print(client.utilisation_cpu())
+#print(client.utilisation_memoire())
+#print(client.utilisation_disque())
 
-print(client.utilisation_cpu())
-print(client.utilisation_memoire())
-print(client.utilisation_disque())
-"""
+m_value_u, m_value_m = client.utilisation_memoire()
+d_value_u, d_value_m = client.utilisation_disque()
+
+print(f"""value = {m_value_u}/{m_value_m}""")
+
+print(f"""value = {d_value_u}/{d_value_m}""")          
