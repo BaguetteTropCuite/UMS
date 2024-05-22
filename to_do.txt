@@ -1,0 +1,8 @@
+Valueurs à envoyer : 
+    cpu_all_core_ float %           (cpu_percent)
+    Memory Usage str "768/1024" + pourcentage utilisation. (Uniquement xxxx/xxxx en db le pourcentage sera calculé à partir de ça)  (cpu_percent)
+    disque_usage par partition
+    Network_Usage float MegaByte up and down
+    Os_version ex Debian 12.5
+    Check Host is up to date ????????????
+    CVE chercheur

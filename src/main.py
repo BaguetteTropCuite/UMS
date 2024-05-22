@@ -2,53 +2,43 @@ from functions import Hote, Monitoring     #Librairie de monitoring
 import time
 import os
 import server
+import multiprocessing
 
+"""
+    Changer le nom de la carte dans l'instance de la monitoring
 
-x = 0
+"""
 
 while True:
 
-    x += 1
+    monitoring = Monitoring(network_interface_name = "enp1s0f0u4")
 
-    m = Monitoring()
 
-    if True:      # <== Changer True par False pour ne pas avoir d'affichage CLI dans le terminal du client (utile pour le debug)
+    p1 = multiprocessing.Process(target=monitoring.utilisation_cpu, args=(monitoring,))
+    p2 = multiprocessing.Process(target=monitoring.utilisation_reseau, args=(monitoring,))
 
-        print(f"""
+    p1.start()
+    p2.start()
 
-        CPU USAGE   : {m.utilisation_cpu()} %
-        RAM Usage   : {m.utilisation_memoire()} %
-        Disque Uage : {m.utilisation_disque()} %
-        
-        """)
-        #time.sleep(2)
-        #os.system('clear')
+    p1.join()
+    p2.join()
+    
 
-    if True:     # <== Monitoring
+    monitoring.utilisation_memoire()
+    monitoring.utilisation_disque()
 
-        
+    avg_cpu, ram_used, ram_total, disque_used, disque_total, reseau_upload, reseau_download = monitoring.utilisation_avg()
 
-        m.utilisation_avg()    #Incremente les valeurs avg à chaque itération
-        print(x)
-        #time.sleep(2)
-        os.system('clear')
+    #server.envoyer_data(avg_cpu, ram_used, ram_total, disque_used, disque_total, reseau_upload, reseau_download)
 
-        if (x == 60):
-            
-            cpu, ram, disque = m.retour_avg()
+    print(f"""
+            cpu = {avg_cpu} %
+            ram = {ram_used}/{ram_total} mb
+            disque = {disque_used}/{disque_total} mb
+            reseau = {reseau_upload} UP  | {reseau_download} DOWN
+    
+    """)
 
-            #fonction envoie des données vers le serveur à l'aide des trois variables
-            server.envoyer_data(cpu,ram,disque)
-
-            print(f"""
-
-                CPU USAGE  AVG   : {cpu} %
-                RAM Usage  AVG   : {ram} %
-                Disque Uage AVG  : {disque} %
-        
-            """)
-            
-            break
 
 
 

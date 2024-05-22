@@ -19,7 +19,7 @@ PORT = 55000                #PORT defaut 55000
 
 
 
-def envoyer_data(cpu_usage,ram_usage,disque_usage):
+def envoyer_data(cpu_usage, ram_used, ram_total, disque_used, disque_total, reseau_upload, reseau_download):
 
 
 
@@ -30,15 +30,19 @@ def envoyer_data(cpu_usage,ram_usage,disque_usage):
 
     message = {
         "cpu_usage": cpu_usage,
-        "ram_usage": ram_usage,
-        "disque_usage": disque_usage
+        "ram_used": ram_used,
+        "ram_total": ram_total,
+        "disque_used": disque_used,
+        "disque_total": disque_total,
+        "reseau_upload": reseau_upload,
+        "reseau_download": reseau_download
     }
 
 
     # CONNECTION AU SERVEUR : 
 
     try:
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as serveur:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as serveur:   # <= IPV4 + TCP
 
             serveur.connect((HOST,PORT))                                                            # Connection au serveur
             message_json = json.dumps(message)                                                      # Converti le dictionnaire message au format json dans la variable "message_json"
