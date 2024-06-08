@@ -1,5 +1,6 @@
 from functions import Hote, Monitoring  # Librairie de monitoring
 import multiprocessing
+from server import envoyer_data
 
 def utilisation_cpu(queue, monitoring):
     cpu_usage = monitoring.utilisation_cpu()
@@ -13,7 +14,17 @@ def utilisation_reseau(queue, monitoring):
         print(f"Erreur : Interface réseau non trouvée - {e}")
         queue.put((0, 0))
 
+
+# DATA COLLECTION 
+_cpu = []
+_ram_used = []
+_disque_used = []
+_reseau_up = []
+_reseau_down = []
+xxx = 0
+
 def main():
+    global xxx
     monitoring = Monitoring(network_interface_name="enp6s0")  # Remplacez par le nom correct de l'interface réseau
 
     # Boucle de monitoring
@@ -46,7 +57,34 @@ def main():
         disque_used = monitoring._disque_used
         disque_total = monitoring._disque_total
 
-        # server.envoyer_data(avg_cpu, ram_used, ram_total, disque_used, disque_total, reseau_upload, reseau_download)
+
+        _ram_used.append(ram_used)
+        _disque_used.append(disque_used)
+        _cpu.append(avg_cpu)
+        _reseau_up.append(reseau_upload)
+        _reseau_down.append(reseau_download)
+        xxx += 1
+        print(xxx)
+
+        if xxx == 60:
+            cpu = sum(_cpu) / len(_cpu)
+            ram_usedd = sum(_ram_used) / len(_ram_used)
+            disque_usedd = sum(_disque_used) / len(_disque_used)
+            reseau_up = sum(_reseau_up)
+            reseau_down = sum(_reseau_down)
+
+            print(f"""
+                AVGGGGGG        
+
+                cpu = {cpu} %
+                ram = {ram_usedd}/{ram_total} MB
+                disque = {disque_usedd}/{disque_total} MB
+                reseau = {reseau_up} UP | {reseau_down} DOWN
+            """)
+
+            # server.envoyer_data(avg_cpu, ram_used, ram_total, disque_used, disque_total, reseau_upload, reseau_download)
+            envoyer_data(cpu, ram_usedd, ram_total, disque_usedd, disque_total, reseau_up, reseau_down)
+            xxx = 0
 
         print(f"""
                 cpu = {avg_cpu} %
@@ -54,6 +92,8 @@ def main():
                 disque = {disque_used}/{disque_total} MB
                 reseau = {reseau_upload} UP | {reseau_download} DOWN
         """)
+
+
 
 if __name__ == "__main__":
     main()
