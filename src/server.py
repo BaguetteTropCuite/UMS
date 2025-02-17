@@ -1,5 +1,5 @@
 """
-La fonction ci-dessus va envoyer les données collecter sur le monitoring au server de monitoring.
+La fonction ci-dessus va envoyer les données collectées sur le monitoring au server de monitoring.
 
 
 ====== A EDITER ET A ADAPTER ===========================
@@ -24,7 +24,7 @@ def envoyer_data(cpu_usage, ram_used, ram_total, disque_used, disque_total, rese
 
 
     """
-    Les données sont envoyé en respectant le format json
+    Les données sont envoyées en respectant le format json
     """
 
 
@@ -44,9 +44,9 @@ def envoyer_data(cpu_usage, ram_used, ram_total, disque_used, disque_total, rese
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as serveur:   # <= IPV4 + TCP
 
-            serveur.connect((HOST,PORT))                                                            # Connection au serveur
+            serveur.connect((HOST,PORT))                                                            # Connexion au serveur
             message_json = json.dumps(message)                                                      # Converti le dictionnaire message au format json dans la variable "message_json"
-            serveur.sendall(message_json.encode('utf-8'))                                                # Les données sont envoyé au serveur
+            serveur.sendall(message_json.encode('utf-8'))                                                # Les données sont envoyées au serveur
 
     except Exception as erreur:
 
